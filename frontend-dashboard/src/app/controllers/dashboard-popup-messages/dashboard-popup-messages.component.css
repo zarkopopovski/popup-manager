@@ -1,0 +1,11 @@
+.floating-right {
+    float: right;
+}
+
+.popup-image {
+    width: 64px;
+}
+
+.a-click-link {
+    cursor: pointer;
+}

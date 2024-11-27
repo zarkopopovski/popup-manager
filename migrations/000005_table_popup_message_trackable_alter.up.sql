@@ -1,0 +1,1 @@
+ALTER TABLE popup_message ADD is_trackable INTEGER NOT NULL DEFAULT 0;
