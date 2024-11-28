@@ -15,11 +15,8 @@ import (
 
 	"math/rand"
 
-<<<<<<< HEAD
-=======
 	"crypto/tls"
 
->>>>>>> small_fix
 	"gopkg.in/gomail.v2"
 
 	//"github.com/teris-io/shortid"
