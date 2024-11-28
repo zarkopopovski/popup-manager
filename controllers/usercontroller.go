@@ -15,6 +15,11 @@ import (
 
 	"math/rand"
 
+<<<<<<< HEAD
+=======
+	"crypto/tls"
+
+>>>>>>> small_fix
 	"gopkg.in/gomail.v2"
 
 	//"github.com/teris-io/shortid"
@@ -113,7 +118,8 @@ func (uController *UserController) RegisterNewUser(w http.ResponseWriter, r *htt
 			port, _ := strconv.Atoi(mailPort)
 
 			d := gomail.NewDialer(mailServer, port, mailUsername, mailPassword)
-
+			d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+			
 			if err := d.DialAndSend(m); err != nil {
 				log.Println(err.Error())
 			}
@@ -236,6 +242,7 @@ func (uController *UserController) ConfirmRegistration(w http.ResponseWriter, r 
 		port, _ := strconv.Atoi(mailPort)
 
 		d := gomail.NewDialer(mailServer, port, mailUsername, mailPassword)
+		d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 		if err := d.DialAndSend(m); err != nil {
 			log.Println(err.Error())
@@ -320,6 +327,7 @@ func (uController *UserController) SendTempPassPerMail(w http.ResponseWriter, r 
 		port, _ := strconv.Atoi(mailPort)
 
 		d := gomail.NewDialer(mailServer, port, mailUsername, mailPassword)
+		d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 		if err := d.DialAndSend(m); err != nil {
 			log.Println(err.Error())

@@ -23,8 +23,7 @@ After the initial start, the migration will be automatically executed, and the S
 ### Website integration ###
 Create Website Token and copy the following code line into your Website body.
 
-<script type="text/javascript" src="http://localhost:8080/api/v1/js/YOUR-WEB-SITE-TOKEN-UUID"></script>
-
+<script type="text/javascript" src="HOSTNAME_API/api/v1/js/YOUR-WEB-SITE-TOKEN-UUID"></script>
 
 ### Contribution guidelines ###
 
@@ -47,4 +46,5 @@ Create Website Token and copy the following code line into your Website body.
 * Yes. The Cloud-Hosted version can be found on the following url: [https://popupeasy.com](https://popupeasy.com)  
 
 ### Is the Cloud-Hosted version different from the Self-Hosted version? ###
+
 * Yes. The Cloud-Hosted version has many features not available in the Self-Hosted version. A full list of these features can be found on the official website: [https://popupeasy.com](https://popupeasy.com)
