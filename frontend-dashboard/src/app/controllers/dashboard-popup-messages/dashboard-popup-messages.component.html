@@ -1,0 +1,175 @@
+<div class="pagetitle">
+    <h1>Popup Messages</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Home</li>
+            <li class="breadcrumb-item active"><a routerLink="/dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active"><a routerLink="/dashboard/web-sites">Web Sites</a></li>
+            <li class="breadcrumb-item active">Popup Messages</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+    
+<section class="section dashboard">
+    <div class="row">
+        <!-- Centar column -->
+        <div class="col-lg-12">
+            @if (!isFormDisplayed) {
+                <button class="btn btn-primary floating-right" (click)="isFormDisplayed=true;">New Web Popup</button>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Date Created</th>
+                        <th scope="col"></th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                      @for (webPopup of webPopupsList; track webPopup.id) {
+                        <tr>
+                            <td>{{webPopup.title}}</td>
+                            <td>{{returnPopTypePerNumber(webPopup.pop_type!)}}</td>
+                            <td>{{webPopup.date_created|date}}</td>
+                            <td><a class="a-click-link" (click)="showCurrentPopupDetails(webPopup);">show</a> / <a class="a-click-link" (click)="editCurrentPopup(webPopup);">edit</a> / <a class="a-click-link" (click)="deleteCurrentPopup(webPopup);">delete</a></td>
+                        </tr>
+                      }
+                    </tbody>
+                </table>       
+            } @else {
+                <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Website Details</h5>
+        
+                      <!-- Horizontal Form -->
+                      <form name="websiteToken" (ngSubmit)="executeWebPopupRequest();" ngForm #nf="ngForm">
+                        <div class="row mb-3">
+                          <label for="inputTitle" class="col-sm-2 col-form-label">Popup Title</label>
+                          <div class="col-sm-10">
+                            <input type="text" name="webtitle" class="form-control" id="webtitle" [(ngModel)]="webTitle" ngModel #webTitleModel="ngModel" [disabled]="isShowMode" required>
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="textDescription" class="col-sm-2 col-form-label">Popup Description</label>
+                            <div class="col-sm-10">
+                              <textarea name="webdescription" class="form-control" id="webdescription" rows="5" cols="40" [(ngModel)]="webDescription" [disabled]="isShowMode" required></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                          <label for="selectType" class="col-sm-2 col-form-label">Type</label>
+                          <div class="col-sm-10">
+                            <select class="form-select" aria-label="Default select example" name="select_type" [(ngModel)]="popupType" [disabled]="isShowMode">
+                              <option selected="">Open this select menu</option>
+                              <option value="1">-</option>
+                              <option value="2">Success</option>
+                              <option value="3">Info</option>
+                              <option value="4">Warning</option>
+                              <option value="5">Error</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <label for="selectPosition" class="col-sm-2 col-form-label">Position</label>
+                          <div class="col-sm-10">
+                            <select class="form-select" aria-label="Default select example" name="select_pos" [(ngModel)]="popupPos" [disabled]="isShowMode">
+                              <option selected="">Open this select menu</option>
+                              <option value="1">Top Right</option>
+                              <option value="2">Top Left</option>
+                              <option value="3">Bottom Right</option>
+                              <option value="4">Bottom Left</option>
+                              <option value="5">Center</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputShow" class="col-sm-2 col-form-label">Show Popup After ( ms )</label>
+                            <div class="col-sm-10">
+                              <input type="number" name="popupShowAfter" class="form-control" id="popupShowAfter" [(ngModel)]="popupShowAfter" [disabled]="isShowMode" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                          <label for="inputClose" class="col-sm-2 col-form-label">Close Popup After ( ms )</label>
+                          <div class="col-sm-10">
+                            <input type="number" name="popupCloseAfter" class="form-control" id="popupCloseAfter" [(ngModel)]="popupCloseAfter" [disabled]="isShowMode" required>
+                          </div>
+                        </div>
+                        @if (!isShowMode) {
+                          @if (imageName==='') {
+                            <div class="row mb-3">
+                              <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
+                              <div class="col-sm-10">
+                                <input #form name="image_file" type="file" class="form-control" id="formFile" (change)="uploadSelectedFile($event, form);" placeholder="Upload a image file (up to 500k)" [disabled]="isShowMode"/>
+                              </div>
+                            </div>  
+                          } @else {
+                            <div class="row mb-3">
+                              <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
+                              <div class="col-sm-10">
+                                <img class="popup-image" src='{{imagesDomain}}/static/{{imageName}}'/><br/>
+                                <a class="a-click-link" (click)="imageName='';">Delete or upload different</a>
+                              </div>
+                            </div>
+                          }
+                          
+                        } @else if (isShowMode && imageName!=='') {
+                          <div class="row mb-3">
+                            <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
+                            <div class="col-sm-10">
+                              <img class="popup-image" src='{{imagesDomain}}/static/{{imageName}}'/>
+                            </div>
+                          </div>
+                        }
+
+                        <div class="row mb-3">
+                          <label class="form-check-label col-sm-2" for="gridCheck2">Is Trackable Popup</label>
+                          <div class="col-sm-10">
+                            <input class="form-check-input" type="checkbox" id="gridCheck2" name="is_trackable" [checked]="isTrackable" [value]="true" [(ngModel)]="isTrackable" [disabled]="isShowMode">
+                          </div>
+                        </div>
+                        
+                        <div class="text-center">
+                          @if (!isShowMode) {
+                          <button type="submit" class="btn btn-primary" [disabled]="!nf.valid">Submit</button> 
+                          <button class="btn btn-secondary" (click)="resetFormData()">Cancel</button>
+                          }
+                          @else {
+                            <button class="btn btn-secondary" (click)="resetFormData()">Close</button>
+                          }
+                          @if (isProgressStarted) {
+                            <div class="progress mt-3">
+                              <div class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          }
+                        </div>
+                      </form><!-- End Horizontal Form -->
+        
+                    </div>
+                </div>
+            }     
+        </div><!-- End Center column -->
+    </div>
+</section>
+
+<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
+  Vertically centered
+</button> -->
+@if (isPopupDeleteAction) {
+<div class="modal fade show" id="verticalycentered" tabindex="-1" aria-modal="true" role="dialog" style="display: block;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Website Popup</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeDeleteModal();"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete the selected web popup?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeDeleteModal();">Close</button>
+        <button type="button" class="btn btn-primary" (click)="deleteCurrentPopupAction();">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+}

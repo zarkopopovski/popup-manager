@@ -1,0 +1,108 @@
+<div class="pagetitle">
+    <h1>Web Sites</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Home</li>
+            <li class="breadcrumb-item active"><a routerLink="/dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Web Sites</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+    
+<section class="section dashboard">
+    <div class="row">
+        <!-- Centar column -->
+        <div class="col-lg-12">
+            @if (!isFormDisplayed) {
+                <button class="btn btn-primary floating-right" (click)="isFormDisplayed=true;">New Website</button>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Api Token</th>
+                        <th scope="col">Date Created</th>
+                        <th scope="col"></th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                      @for (webToken of webTokensList; track webToken.api_token) {
+                        <tr>
+                            <td>{{webToken.title}}</td>
+                            <td>{{webToken.api_token}}</td>
+                            <td>{{webToken.date_created|date}}</td>
+                            <td><a class="a-click-link" (click)="showCurrentTokenDetails(webToken);">show</a> / <a class="a-click-link" (click)="editCurrentToken(webToken);">edit</a> / <a class="a-click-link" (click)="deleteCurrentToken(webToken);">delete</a> / <a class="a-click-link" (click)="showPopupsSite(webToken);">popups</a></td>
+                        </tr>
+                      }
+                    </tbody>
+                </table>       
+            } @else {
+                <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Website Details</h5>
+        
+                      <!-- Horizontal Form -->
+                      <form name="websiteToken" (ngSubmit)="executeWebTokenRequest();" ngForm #nf="ngForm">
+                        <div class="row mb-3">
+                          <label for="inputEmail3" class="col-sm-2 col-form-label">Website Title</label>
+                          <div class="col-sm-10">
+                            <input type="text" name="webtitle" class="form-control" id="webtitle" [(ngModel)]="webTitle" ngModel #webTitleModel="ngModel" [disabled]="isShowMode" required>
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">Website Description</label>
+                            <div class="col-sm-10">
+                              <textarea name="webdescription" class="form-control" id="webdescription" rows="5" cols="40" [(ngModel)]="webDescription" [disabled]="isShowMode" required></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">Website URL</label>
+                            <div class="col-sm-10">
+                              <input type="text" name="weburl" class="form-control" id="weburl" [(ngModel)]="webUrl" ngModel #webURL="ngModel" [disabled]="isShowMode" required>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                          @if (!isShowMode) {
+                          <button type="submit" class="btn btn-primary" [disabled]="!nf.valid">Submit</button> 
+                          <button class="btn btn-secondary" (click)="resetFormData()">Cancel</button>
+                          }
+                          @else {
+                            <button class="btn btn-secondary" (click)="resetFormData()">Close</button>
+                          }
+                          @if (isProgressStarted) {
+                            <div class="progress mt-3">
+                              <div class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          }
+                        </div>
+                      </form><!-- End Horizontal Form -->
+        
+                    </div>
+                </div>
+            }     
+        </div><!-- End Center column -->
+    </div>
+</section>
+
+<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
+  Vertically centered
+</button> -->
+@if (isTokenDeleteAction) {
+<div class="modal fade show" id="verticalycentered" tabindex="-1" aria-modal="true" role="dialog" style="display: block;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Website ApiToken</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeDeleteModal();"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete the selected api token?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeDeleteModal();">Close</button>
+        <button type="button" class="btn btn-primary" (click)="deleteCurrentTokenAction();">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+}
