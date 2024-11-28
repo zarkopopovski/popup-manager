@@ -759,7 +759,7 @@ func (popUpController *PopupController) GetBasicStatistics(w http.ResponseWriter
 func (popUpController *PopupController) JSHandler(w http.ResponseWriter, r *http.Request) {
 	apiToken := r.PathValue("apiToken")
 
-	apiHostname := os.Getenv("HOSTNAME")
+	apiHostname := os.Getenv("HOSTNAME_API")
 
 	workload := `
 		(()=>{
