@@ -39,7 +39,7 @@ Create Website Token and copy the following code line into your Website body.
 
 ### Is there a Demo? ###
 
-* Demo can be found on the following url: [http://demo.popupeasy.com](http://demo.popupeasy.com) and can be tested with the following credentials: demo@demo.com / demo123#
+* Demo can be found on the following url: [https://demo.popupeasy.com](https://demo.popupeasy.com) and can be tested with the following credentials: demo@demo.com / demo123#
 
 
 ### Is there a Cloud-Hosted version? ###
