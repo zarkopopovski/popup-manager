@@ -21,7 +21,7 @@ Because SQLite is used as an embedded database engine, which is a C library, if 
 After the initial start, the migration will be automatically executed, and the SQLite database will be created in the same folder as the binary file. The Popup Manager backend requires the assets folder to be in the same directory as the binary file. Inside the assets folder, the GeoIP2 base can be saved, and the upload folder needs to be created where images for the popups will be saved. If the assets and upload folders don't exist, they will be automatically created.
 
 ### Website integration ###
-Create Website Token and copy the following code line into your Website body.
+Create a website token and copy the following code line before the closing </head> tag or into the <body> section of your website.
 
 <script type="text/javascript" src="HOSTNAME_API/api/v1/js/YOUR-WEB-SITE-TOKEN-UUID"></script>
 

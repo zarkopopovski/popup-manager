@@ -774,170 +774,174 @@ func (popUpController *PopupController) JSHandler(w http.ResponseWriter, r *http
 				return xhr;
 			}
 
-			var sheet = document.createElement('style');
-			sheet.innerHTML = ".toast-container{position:fixed;width:300px;max-height:calc(100vh - 40px);overflow-y:auto;z-index:999999999}.toast{background-color:#333;color:#fff;padding:10px;border-radius:5px;margin-bottom:10px;display:flex;align-items:center;justify-content:flex-start}.toast-icon{margin-right:10px;width:48px;height:48px;border-radius:5px}.toast-message{text-align:left}.toast-message div{margin-top:5px}";
+			setTimeout(()=>{
+				var document = window.document;	
+			
+				var sheet = document.createElement('style');
+				sheet.innerHTML = ".toast-container{position:fixed;width:300px;max-height:calc(100vh - 40px);overflow-y:auto;z-index:999999999}.toast{background-color:#333;color:#fff;padding:10px;border-radius:5px;margin-bottom:10px;display:flex;align-items:center;justify-content:flex-start}.toast-icon{margin-right:10px;width:48px;height:48px;border-radius:5px}.toast-message{text-align:left}.toast-message div{margin-top:5px}";
 
-			document.body.appendChild(sheet); // append in body
-			document.head.appendChild(sheet); // append in head
+				document.body.appendChild(sheet); // append in body
+				document.head.appendChild(sheet); // append in head
 
-			let toastId = 0;
+				let toastId = 0;
 
-			showToast = (popupID = -1, position = 'top-right', message1 = '', message2 = '', image = '', showTime = 0, closeTime = 0, popupType = -1, isTrackable = false) => {
-				//const toastContainer = document.getElementById('toastContainer');
-				// Create toast container element
-				let toastContainer = document.querySelector('.toast-container.' + position);
-				if (!toastContainer) {
-					toastContainer = document.createElement('div');
-					toastContainer.classList.add('toast-container', position);
-					document.body.appendChild(toastContainer);
-				}
+				showToast = (popupID = -1, position = 'top-right', message1 = '', message2 = '', image = '', showTime = 0, closeTime = 0, popupType = -1, isTrackable = false) => {
+					//const toastContainer = document.getElementById('toastContainer');
+					// Create toast container element
+					let toastContainer = document.querySelector('.toast-container.' + position);
+					if (!toastContainer) {
+						toastContainer = document.createElement('div');
+						toastContainer.classList.add('toast-container', position);
+						document.body.appendChild(toastContainer);
+					}
 
-				// Create toast element
-				const toast = document.createElement('div');
-				toast.classList.add('toast');
-				toast.id = 'toast-${toastId++}';
-				
-				let fileName = Object.values(image)[0];
-
-				const icon = document.createElement('div');
-				if (fileName !== '') {
-					// Create icon element
-					icon.classList.add('toast-icon');
-					icon.style.backgroundImage = 'url("$hostName$/static/'+fileName+'")'; // Set your image URL here
-					icon.style.backgroundSize = 'contain';
-				}
-				// Create message elements
-				const messageContainer = document.createElement('div');
-				messageContainer.classList.add('toast-message');
-				const messageLine1 = document.createElement('div');
-				messageLine1.textContent = message1;
-				const messageLine2 = document.createElement('div');
-				messageLine2.textContent = message2;
-
-				// Append icon and messages to toast
-				messageContainer.appendChild(messageLine1);
-				messageContainer.appendChild(messageLine2);
-
-				if (fileName !== '') {
-					toast.appendChild(icon); 
-				}
-				
-				toast.appendChild(messageContainer);
-
-				// Append toast to container
-				toastContainer.appendChild(toast);
-
-				// Apply animation
-				setTimeout(() => {
-					toast.classList.add('show');
+					// Create toast element
+					const toast = document.createElement('div');
+					toast.classList.add('toast');
+					toast.id = 'toast-${toastId++}';
 					
-					if (closeTime > 0) {
-						setTimeout(() => {
-							toast.classList.remove('show');
-							setTimeout(() => {
-								toast.remove(); // Remove toast after animation
-							}, 300);
-						}, closeTime); // Close after time > 0
+					let fileName = Object.values(image)[0];
+
+					const icon = document.createElement('div');
+					if (fileName !== '') {
+						// Create icon element
+						icon.classList.add('toast-icon');
+						icon.style.backgroundImage = 'url("$hostName$/static/'+fileName+'")'; // Set your image URL here
+						icon.style.backgroundSize = 'contain';
 					}
-				}, showTime); // Delay before showing toast
+					// Create message elements
+					const messageContainer = document.createElement('div');
+					messageContainer.classList.add('toast-message');
+					const messageLine1 = document.createElement('div');
+					messageLine1.textContent = message1;
+					const messageLine2 = document.createElement('div');
+					messageLine2.textContent = message2;
+
+					// Append icon and messages to toast
+					messageContainer.appendChild(messageLine1);
+					messageContainer.appendChild(messageLine2);
+
+					if (fileName !== '') {
+						toast.appendChild(icon); 
+					}
+					
+					toast.appendChild(messageContainer);
+
+					// Append toast to container
+					toastContainer.appendChild(toast);
+
+					// Apply animation
+					setTimeout(() => {
+						toast.classList.add('show');
+						
+						if (closeTime > 0) {
+							setTimeout(() => {
+								toast.classList.remove('show');
+								setTimeout(() => {
+									toast.remove(); // Remove toast after animation
+								}, 300);
+							}, closeTime); // Close after time > 0
+						}
+					}, showTime); // Delay before showing toast
+					
+					// Close toast on click
+					toast.addEventListener('click', () => {
+						if (isTrackable) {
+							getAjax('$hostName$/api/v1/notification/$apiToken$/' + popupID + '/trigger', (res) => { });
+						}
+
+						toast.remove();
+						if (toastContainer.childNodes.length === 0) {
+							toastContainer.remove(); // Remove toast container if empty
+						}
+					});
+
+					// Set toast position
+					switch (position) {
+						case 'top-right':
+							toastContainer.style.top = '20px';
+							toastContainer.style.right = '20px';
+							break;
+						case 'top-left':
+							toastContainer.style.top = '20px';
+							toastContainer.style.left = '20px';
+							break;
+						case 'bottom-left':
+							toastContainer.style.bottom = '20px';
+							toastContainer.style.left = '20px';
+							break;
+						case 'bottom-right':
+							toastContainer.style.bottom = '20px';
+							toastContainer.style.right = '20px';
+							break;
+						case 'center':
+							toastContainer.style.top = '50%';
+							toastContainer.style.left = '50%';
+							toastContainer.style.transform = 'translate(-50%, -50%)';
+							break;
+						default:
+							console.error('Invalid position specified for toast notification.');
+					}
+
+					switch (popupType) {
+						case 1: 
+							toast.style.backgroundColor = '#333';
+							break;
+						case 2: 
+							toast.style.backgroundColor = '#8BC34A';
+							break;
+						case 3: 
+							toast.style.backgroundColor = '#FFEB3B';
+							break;
+						case 4: 
+							toast.style.backgroundColor = '#FF9800';
+							break;
+						case 5: 
+							toast.style.backgroundColor = '#F44336';
+							break;
+						default:	
+							toast.style.backgroundColor = '#333';
+							break;						
+					}
+				}
+
 				
-				// Close toast on click
-				toast.addEventListener('click', () => {
-					if (isTrackable) {
-						getAjax('$hostName$/api/v1/notification/$apiToken$/' + popupID + '/trigger', (res) => { });
-					}
-
-					toast.remove();
-					if (toastContainer.childNodes.length === 0) {
-						toastContainer.remove(); // Remove toast container if empty
-					}
-				});
-
-				// Set toast position
-				switch (position) {
-					case 'top-right':
-						toastContainer.style.top = '20px';
-						toastContainer.style.right = '20px';
-						break;
-					case 'top-left':
-						toastContainer.style.top = '20px';
-						toastContainer.style.left = '20px';
-						break;
-					case 'bottom-left':
-						toastContainer.style.bottom = '20px';
-						toastContainer.style.left = '20px';
-						break;
-					case 'bottom-right':
-						toastContainer.style.bottom = '20px';
-						toastContainer.style.right = '20px';
-						break;
-					case 'center':
-						toastContainer.style.top = '50%';
-						toastContainer.style.left = '50%';
-						toastContainer.style.transform = 'translate(-50%, -50%)';
-						break;
-					default:
-						console.error('Invalid position specified for toast notification.');
+				checkPopupPosition = (id) => {
+					switch(id) {
+						case 1: return 'top-right';
+						case 2: return 'top-left';
+						case 3: return 'bottom-right';
+						case 4: return 'bottom-left';
+						case 5: return 'center';
+						default: return '';
+						}
 				}
-
-				switch (popupType) {
-					case 1: 
-						toast.style.backgroundColor = '#333';
-						break;
-					case 2: 
-						toast.style.backgroundColor = '#8BC34A';
-						break;
-					case 3: 
-						toast.style.backgroundColor = '#FFEB3B';
-						break;
-					case 4: 
-						toast.style.backgroundColor = '#FF9800';
-						break;
-					case 5: 
-						toast.style.backgroundColor = '#F44336';
-						break;
-					default:	
-						toast.style.backgroundColor = '#333';
-						break;						
-				}
-			}
-
-			
-			checkPopupPosition = (id) => {
-				switch(id) {
-					case 1: return 'top-right';
-					case 2: return 'top-left';
-					case 3: return 'bottom-right';
-					case 4: return 'bottom-left';
-					case 5: return 'center';
-					default: return '';
-					}
-			}
-			
-			getAjax('$hostName$/api/v1/notification/$apiToken$', (res) => {
-				const jsonObj = JSON.parse(res);
-				if (jsonObj.error_code === '-1') {
-					const popupsArray = jsonObj.data;
-					if (popupsArray.length > 0) {
-						for (let i = 0; i < popupsArray.length; i++) {
-							const obj1 = popupsArray[i];
-							setTimeout(() => {
-								showToast(
-									obj1.id,
-									checkPopupPosition(obj1.popup_pos),
-									obj1.title,
-									obj1.description,
-									obj1.image_name,
-									obj1.show_time,
-									obj1.close_time,
-									obj1.pop_type,
-									obj1.is_trackable
-								);
-							}, obj1.show_time);
+				
+				getAjax('$hostName$/api/v1/notification/$apiToken$', (res) => {
+					const jsonObj = JSON.parse(res);
+					if (jsonObj.error_code === '-1') {
+						const popupsArray = jsonObj.data;
+						if (popupsArray.length > 0) {
+							for (let i = 0; i < popupsArray.length; i++) {
+								const obj1 = popupsArray[i];
+								setTimeout(() => {
+									showToast(
+										obj1.id,
+										checkPopupPosition(obj1.popup_pos),
+										obj1.title,
+										obj1.description,
+										obj1.image_name,
+										obj1.show_time,
+										obj1.close_time,
+										obj1.pop_type,
+										obj1.is_trackable
+									);
+								}, obj1.show_time);
+							}
 						}
 					}
-				}
-			});
+				});
+			}, 10);
 		})();
 	`
 
